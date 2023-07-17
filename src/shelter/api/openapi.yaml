@@ -1,0 +1,231 @@
+openapi: 3.0.3
+info:
+  title: Local Shelter API
+  description: |-
+    This is an API specification for a local shelter to manage their donation inventory.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: a.nowei42@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+tags:
+  - name: donations
+    description: Operations for managing donations to the shelter
+
+paths:
+  /donations/register:
+    post:
+      tags:
+        - donations
+      summary: Records details of the donations
+      description: Allows the shelter staff to record details of the donations, such as the donor's name, type of donation (money, food, clothing, etc.), quantity or amount donated, and the date of the donation.
+      operationId: registerDonation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationRegistration"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationRegistration"
+
+  /donations/distribute:
+    post:
+      tags:
+        - donations
+      summary: Distribute certain donations
+      description: Allows the shelter staff to log when and how much of the donations are distributed, capturing the type of donation, quantity or amount distributed, and the date of distribution.
+      operationId: distributeDonation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationDistribution"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationDistribution"
+        "405":
+          description: Invalid input
+  /donations/report/inventory:
+    get:
+      tags:
+        - donations
+      summary: Generates an inventory report for the current status of donations
+      description: Generates an inventory report displaying the current status of donations, grouped by type.
+      operationId: getDonationInventoryReport
+      parameters:
+        - in: query
+          name: verbose
+          schema:
+            type: boolean
+          required: false
+          description: If true, gets the verbose distribution information for each donation
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonationInventory"
+  /donations/report/donor:
+    get:
+      tags:
+        - donations
+      summary: Generates a donator report for each donor
+      description: Generates a donator report, summarizing the total contributions received from each donor
+      operationId: getDonorReport
+      parameters:
+        - in: query
+          name: verbose
+          schema:
+            type: boolean
+          required: false
+          description: If true, gets the verbose distribution information for each donation
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DonorReport"
+
+components:
+  schemas:
+    DonationType:
+      type: string
+      description: The type of donation
+      enum:
+        - money
+        - food # food is ambiguous so it should have a descriptor, amount of food is also ambiguous
+        - clothing # clothing is ambiguous so it should have a descriptor
+        # etc.
+    DonationRegistration:
+      type: object
+      required:
+        - name
+        - type
+        - quantity
+      properties:
+        id:
+          type: integer
+          description: id of the donation (to be populated by the service)
+          format: int64
+          example: 1
+        name:
+          # There should really be a donor id or something
+          type: string
+          description: name of the donor; all donations under the same name are attributed to the same person (for simplicity)
+          example: "John Doe"
+        type:
+          $ref: "#/components/schemas/DonationType"
+        quantity:
+          type: integer
+          description: the amount given for the donation
+          format: int64
+          example: 1
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+          description: (optional) description of the donation
+    DonationDistribution:
+      type: object
+      required:
+        - donation_id
+        - type
+        - quantity
+      properties:
+        id:
+          type: integer
+          description: id of the distribution (to be populated by the service)
+        donation_id:
+          type: integer
+          description: id of the donation this is associated with
+        type:
+          $ref: "#/components/schemas/DonationType"
+        quantity:
+          type: integer
+          description: the amount distributed from the donation
+          format: int64
+          example: 1
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+          description: (optional) description of the distribution
+        # Probably needs like a recipient or something
+    TypeDonationStatus:
+      type: object
+      required:
+        - type
+        - statuses
+      properties:
+        type:
+          $ref: "#/components/schemas/DonationType"
+        statuses:
+          type: array
+          items:
+            $ref: "#/components/schemas/DonationStatus"
+    DonationStatus:
+      type: object
+      required:
+        - donation
+        - distributions
+      properties:
+        donation:
+          $ref: "#/components/schemas/DonationRegistration"
+        distributions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DonationDistribution"
+    DonorSummary:
+      type: object
+      required:
+        - name
+        - donations
+      properties:
+        name:
+          type: string
+          description: name of the donor; all donations under the same name are attributed to the same person (for simplicity)
+          example: "John Doe"
+        donations:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                $ref: "#/components/schemas/DonationType"
+              quantity:
+                type: integer
+                description: the amount given for the donation
+                format: int64
+              quantity_distributed:
+                type: integer
+                format: int64
+                description: the amount distributed for the donation
+    DonationInventory:
+      type: object
+      properties:
+        report:
+          type: array
+          items:
+            $ref: "#/components/schemas/TypeDonationStatus"
+    DonorReport:
+      type: object
+      properties:
+        report:
+          type: array
+          items:
+            $ref: "#/components/schemas/DonorSummary"
