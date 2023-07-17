@@ -56,20 +56,13 @@ paths:
                 $ref: "#/components/schemas/DonationDistribution"
         "405":
           description: Invalid input
-  /donations/report/inventory:
+  /donations/report/inventory: # Likely needs pagination at some point
     get:
       tags:
         - donations
       summary: Generates an inventory report for the current status of donations
       description: Generates an inventory report displaying the current status of donations, grouped by type.
       operationId: getDonationInventoryReport
-      parameters:
-        - in: query
-          name: verbose
-          schema:
-            type: boolean
-          required: false
-          description: If true, gets the verbose distribution information for each donation
       responses:
         "200":
           description: successful operation
@@ -77,20 +70,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonationInventory"
-  /donations/report/donor:
+  /donations/report/donor: # Likely needs pagination at some point
     get:
       tags:
         - donations
       summary: Generates a donator report for each donor
       description: Generates a donator report, summarizing the total contributions received from each donor
       operationId: getDonorReport
-      parameters:
-        - in: query
-          name: verbose
-          schema:
-            type: boolean
-          required: false
-          description: If true, gets the verbose distribution information for each donation
       responses:
         "200":
           description: successful operation
