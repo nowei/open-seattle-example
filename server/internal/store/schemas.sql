@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS [donations] (
     [quantity] INTEGER,
     [description] TEXT,
 );
-CREATE TABLE IF NOT EXISTS [distributions] (
+CREATE TABLE IF NOT EXISTS [donation_distributions] (
     [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     [donation_id] INTEGER,
     [date] DATETIME
