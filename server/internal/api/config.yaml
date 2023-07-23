@@ -1,4 +1,3 @@
----
 package: api
 generate:
   chi-server: true
@@ -6,4 +5,4 @@ generate:
   embedded-spec: true
 compatibility:
   apply-chi-middleware-first-to-last: true
-output: router.gen.go
+output: api/api.gen.go

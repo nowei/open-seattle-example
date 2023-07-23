@@ -28,13 +28,12 @@ paths:
             schema:
               $ref: "#/components/schemas/DonationRegistration"
       responses:
-        "200":
+        "201":
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonationRegistration"
-
   /donations/distribute:
     post:
       tags:
@@ -48,7 +47,7 @@ paths:
             schema:
               $ref: "#/components/schemas/DonationDistribution"
       responses:
-        "200":
+        "201":
           description: successful operation
           content:
             application/json:
@@ -117,6 +116,7 @@ components:
         quantity:
           type: integer
           description: the amount given for the donation
+          minimum: 1
           format: int64
           example: 1
         date:
@@ -145,6 +145,7 @@ components:
           description: the amount distributed from the donation
           format: int64
           example: 1
+          minimum: 1
         date:
           type: string
           format: date-time

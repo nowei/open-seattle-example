@@ -6,15 +6,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	api "github.com/nowei/open-seattle-example/server/internal"
+	"github.com/nowei/open-seattle-example/server/internal"
+	"github.com/nowei/open-seattle-example/server/internal/api"
 	logger "github.com/nowei/open-seattle-example/server/internal/logger"
 )
 
-var log = logger.GetLogger()
+var log = logger.GetLogger().Sugar()
 
 func main() {
 
-	server := api.HandlerWithOptions(api.NewServer(), api.ChiServerOptions{})
+	server := api.HandlerWithOptions(internal.NewServer(), api.ChiServerOptions{})
 	r := chi.NewRouter()
 
 	r.Use(middleware.RealIP)
@@ -26,5 +27,5 @@ func main() {
 		w.Write([]byte("ok"))
 	}))
 
-	http.ListenAndServe(":3333", r)
+	log.Fatalf("%v", http.ListenAndServe(":3333", r).Error())
 }
