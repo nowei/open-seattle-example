@@ -195,18 +195,20 @@ components:
         donations:
           type: array
           items:
-            type: object
-            properties:
-              type:
-                $ref: "#/components/schemas/DonationType"
-              quantity:
-                type: integer
-                description: the amount given for the donation
-                format: int64
-              quantity_distributed:
-                type: integer
-                format: int64
-                description: the amount distributed for the donation
+            $ref: "#/components/schemas/DonationSummary"
+    DonationSummary:
+      type: object
+      properties:
+        type:
+          $ref: "#/components/schemas/DonationType"
+        quantity:
+          type: integer
+          description: the amount given for the donation
+          format: int64
+        quantity_distributed:
+          type: integer
+          format: int64
+          description: the amount distributed for the donation
     DonationInventory:
       type: object
       properties:

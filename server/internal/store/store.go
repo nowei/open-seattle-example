@@ -60,7 +60,7 @@ func (d *DbStore) InsertRegistration(registrationData api.DonationRegistration) 
 }
 
 func (d *DbStore) GetDonationRegistration(id int) (*api.DonationRegistration, error) {
-	row := d.db.QueryRow("SELECT * FROM donations WHERE id=?", id)
+	row := d.db.QueryRow("SELECT * FROM donations WHERE Id=?", id)
 	registration := api.DonationRegistration{}
 	if err := row.Scan(&registration.Id, &registration.Date, &registration.Name, &registration.Type, &registration.Quantity, &registration.Description); err == sql.ErrNoRows {
 		return nil, err
@@ -104,18 +104,103 @@ func (d *DbStore) GetDistributedDonationAmount(donationId int) (int64, error) {
 func (d *DbStore) GetInventoryReport() (*api.DonationInventory, error) {
 
 	// For each type
+	types := []api.DonationType{api.Clothing, api.Food, api.Money}
+	var reportByType []api.TypeDonationStatus
 
-	// For all donations for the type
-	// For all distributions for the donation
-	return nil, nil
+	for _, t := range types {
+		// For all donations for the type
+		registrationRows, err := d.db.Query("SELECT * FROM donations WHERE type=?", t)
+		var donationStatuses []api.DonationStatus
+		if err != nil {
+			return nil, err
+		}
+		defer registrationRows.Close()
+		for registrationRows.Next() {
+			registration := api.DonationRegistration{}
+			err = registrationRows.Scan(&registration.Id, &registration.Date, &registration.Name, &registration.Type, &registration.Quantity, &registration.Description)
+			if err != nil {
+				return nil, err
+			}
+
+			// For all distributions for the donation
+			distributionRows, err := d.db.Query("SELECT * FROM donation_distributions WHERE donation_id=?", registration.Id)
+			if err != nil {
+				return nil, err
+			}
+			defer distributionRows.Close()
+			var distributions []api.DonationDistribution
+			for distributionRows.Next() {
+				distribution := api.DonationDistribution{}
+				err = distributionRows.Scan(&distribution.Id, &distribution.DonationId, &distribution.Date, &distribution.Type, &distribution.Quantity, &distribution.Description)
+				if err != nil {
+					return nil, err
+				}
+				distributions = append(distributions, distribution)
+			}
+			status := api.DonationStatus{Donation: registration, Distributions: distributions}
+			donationStatuses = append(donationStatuses, status)
+		}
+		reportByType = append(reportByType, api.TypeDonationStatus{Type: t, Statuses: donationStatuses})
+	}
+	report := api.DonationInventory{Report: &reportByType}
+
+	return &report, nil
 }
 
 func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
-	// For each donor
+	// Get unique donors
+	nameRows, err := d.db.Query("SELECT DISTINCT(name) FROM donations")
+	if err != nil {
+		return nil, err
+	}
+	defer nameRows.Close()
 
-	// Aggregate donations by type
+	var donorSummaries []api.DonorSummary
 
-	// Aggregate distributions by type
+	for nameRows.Next() {
+		var name string
+		err = nameRows.Scan(&name)
+		if err != nil {
+			return nil, err
+		}
 
-	return nil, nil
+		var donationSummaries []api.DonationSummary
+
+		// Aggregate donations by type
+		// Aggregate distributions by type
+		donationSummaryRows, err := d.db.Query(`
+		WITH dr_summary AS (
+			  SELECT type, SUM(quantity)
+			    FROM donations
+			   WHERE name = ?
+			GROUP BY type
+		),
+		WITH dd_summary AS (
+			SELECT type, SUM(quantity)
+			  FROM donation_distributions
+			 WHERE name = ?
+		  GROUP BY type
+		)
+		SELECT dr_summary.type, dr_summary.quantity, dd_summary.quantity
+		  FROM dr_summary
+		  JOIN dd_summary
+		    ON dr_summary.type = dd_summary.type;
+		`, name, name)
+		if err != nil {
+			return nil, err
+		}
+		defer donationSummaryRows.Close()
+
+		for donationSummaryRows.Next() {
+			donation := api.DonationSummary{}
+			donationSummaryRows.Scan(&donation.Type, &donation.Quantity, &donation.QuantityDistributed)
+			donationSummaries = append(donationSummaries, donation)
+		}
+
+		donorSummary := api.DonorSummary{Donations: donationSummaries, Name: name}
+		donorSummaries = append(donorSummaries, donorSummary)
+	}
+
+	report := api.DonorReport{Report: &donorSummaries}
+	return &report, nil
 }

@@ -76,6 +76,18 @@ type DonationStatus struct {
 	Donation      DonationRegistration   `json:"donation"`
 }
 
+// DonationSummary defines model for DonationSummary.
+type DonationSummary struct {
+	// Quantity the amount given for the donation
+	Quantity *int64 `json:"quantity,omitempty"`
+
+	// QuantityDistributed the amount distributed for the donation
+	QuantityDistributed *int64 `json:"quantity_distributed,omitempty"`
+
+	// Type The type of donation
+	Type *DonationType `json:"type,omitempty"`
+}
+
 // DonationType The type of donation
 type DonationType string
 
@@ -86,16 +98,7 @@ type DonorReport struct {
 
 // DonorSummary defines model for DonorSummary.
 type DonorSummary struct {
-	Donations []struct {
-		// Quantity the amount given for the donation
-		Quantity *int64 `json:"quantity,omitempty"`
-
-		// QuantityDistributed the amount distributed for the donation
-		QuantityDistributed *int64 `json:"quantity_distributed,omitempty"`
-
-		// Type The type of donation
-		Type *DonationType `json:"type,omitempty"`
-	} `json:"donations"`
+	Donations []DonationSummary `json:"donations"`
 
 	// Name name of the donor; all donations under the same name are attributed to the same person (for simplicity)
 	Name string `json:"name"`
@@ -340,20 +343,20 @@ var swaggerSpec = []string{
 	"kXD4odYOU7F8u5P81tzoVje9T3v7HhWxy87chblDQ9ZtptRyWFlH/KQJS/+5ADmwzuoVSar9cDUhnZOb",
 	"EPbBSC4x4wzLf5vnA6ITs0dS+wgOfpIsU4IYWeLUNa+OnFv3K8ii6OPwUJsUXeOat4b90iFI6plMdnhf",
 	"ofMc/so68LqsCq00bXbCFX/Y3MC5nc36UWWU6Ts0wC7+Q/UT8vtlhdNSfErUkRr5o4tnVuwn5TOo7LH2",
-	"dorqkGqIaC/qT937us31LsDXOQIfYTqOMTWM2VtRWoMbwbhaFihVWMqZNDczLDpnJl/22vNVmhRsXdVl",
-	"Kd3maDUaTkzB7UprJ4LdPV9XBUeIQefg3agjHd+57uXyXgU2ye0+mf8PqjYvFAMP5kplphNOWOLDOn65",
-	"Qhxqrd9ABVv560Ob3o1PaLOy7EZZQ1KFWsRS6oJDiY1do352+lvGK7Gy5aQbi+tu8DNw9uYCfIVKr7Rq",
-	"WieDJKGwShbgcyyIkbZQSiMzZEy1G/qs7maXWESi0AqNDwloeCXOKqlyhNN4ISJROw4wJ6qWSbJer2MZ",
-	"3sbWZUl71CevLn5/8efViyen8SLOqSxCVtGV/vXqqundgw2/llmGLtY2CVsS5o6mQKdXIf6rNv6zNxci",
-	"EnfofJOAk3gRn5ywbVuhkZUWS/E0XsRPRSQqSXmgQtJTLBnKN9DIepoWzVlR2LVvSN+69SRXK05eYTNY",
-	"52hAmhRyu4ayVvn+0OJDCY2UIgIlK6q5CsLGfXWPoNMhYMwmShMFd8GFpObkqMcwYlwOzQyaiqXoO19f",
-	"OqJhJ3p6btNNRzk04fqy4kIO+5L3vmmIDcnv12q3TTH4ypq2Kk8XJ9/d535t+Fop9H5VF9Bnh4nybLGY",
-	"Yv5cptAmKJSy77rWKJeg0JHUZsCZaSozP+7/Xtzw+RHlXBgb0N2PcA6VdSmkSFIXfsK0CDwTUPpB4n/y",
-	"QcajCcvgURgdIuDJIYJucIgAScWP5znIR+f4Nw5iyr/L9soPxL69wexB2Lfv8zux7zLA7w/ifyQDedBL",
-	"AjvYeYYzJHyJhsNED7Ixbx00B5ljHI/+u9cvS7IAzmc/5zJRUd91v+dRqryh44QcL5HGY+kEq8W3xKp3",
-	"8wUQ/TwH0YUhdIY7Ebo7dPDCOev2wDqcwtCLd3JyNGp6/FHhc8iN+njnOdW+KuSmg07VzqEhaAaTsTz4",
-	"CDJn66r9jb2pMD6A3e7HjgfBce/7ygOjOZPWbvb/RD4Pobzt1/fDet0F7oP9MKkxcMNg0Q3jTZsQ3dw/",
-	"crC92f4TAAD//0d/hkkJFQAA",
+	"dorqkGqIaC/qT967Lks5Jxdfh/4RRdA5eDdS4uMV+14u70Wsg6m7bq3tBnydI/ARruRxORim+1tRWoOb",
+	"EK1lbVeFpZzr7WamAM9ZBC572f4qOQ+2OrCPFfLhxLQuOlX64po4GMT/QxfnpWZIx1yxzfTSSUJ9WMd7",
+	"5PNAc/4GOtoKaB/a9G58QpuVZTfKGpIqUBJLqQsOJTZ2jfrZ6W8Zr8TKlpN+Lq670dHA2ZsL8BUqvdKq",
+	"ab4MkoTCKlmAz7EgRtpCKY3MkDHVbujUupt+YhGJQis0PiSg4ZU4q6TKEU7jhYhE7TjAnKhaJsl6vY5l",
+	"eBtblyXtUZ+8uvj9xZ9XL56cxos4p7IIWUVX+terq6b7Dzb8WmYZuljbJGxJmDuaAp1ehfiv2vjP3lyI",
+	"SNyh800CTuJFfHLCtm2FRlZaLMXTeBE/FZGoJOWBCklPsWQQwkAj62laNGdFYde+IX3r1pNcrTh5hc1g",
+	"naMBaVLI7RrKWuX7Y48PJTTS3AiUrKjmKggb90Uugk7RgTGbaHYU3AUXkpqToy7FiHE5NFNsKpai7519",
+	"6YiGnejpuU03HeXQhOvLigs57Eve+6alNiS/X7PeNsXgK2vaqjxdnHx3n/u14Wul0PtVXUCfHSbKs8Vi",
+	"ivlzmUKboFDKvhPvUS5BoSOpzYAz01RmfjxBeHHD50eUc2HwQHc/wjlU1qWQIkld+AnTIvBMQOkHif/J",
+	"BxmPJiyDR6GDRsANNIKuf0aApOLH8xzko3P8Gwcx5d9le+UHYt/eaPcg7Nv3+Z3Ydxng9wfxP5KBPO8k",
+	"gR3sPMMZEr5Ew2GiB9mYtw6ag8wxjkf/3euXJVkA57OflJmoqO+6LwIoVd7QcUKOl0jj6WyC1eJbYtW7",
+	"+QKIfp6D6MIQOsOdCN0dOnjhnHV7YB1OYejFOzk5GjU9/izxOeRGfbzznGpfFXLTQadq59AQNIPJWB58",
+	"BJmzddX+St9UGB/AbvdzyYPguPeF5oHRnElr9yvqE/k8hPK2X98P63UXuA/2w6TGwA2DRTeMN21CdHP/",
+	"yMH2ZvtPAAAA//+M0R5JSxUAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
