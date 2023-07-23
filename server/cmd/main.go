@@ -47,7 +47,10 @@ func main() {
 
 	r.Mount("/", server)
 	r.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
+		_, err := w.Write([]byte("{\"msg\": \"ok\"}"))
+		if err != nil {
+			log.Errorf("Failed to write response: %s", err.Error())
+		}
 	}))
 
 	log.Fatalf("%v", http.ListenAndServe(":3333", r).Error())

@@ -10,7 +10,7 @@ import (
 	"github.com/nowei/open-seattle-example/server/internal/store"
 )
 
-//go:generate go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen --config=api/config.yaml ../../api/openapi.yaml
+//go:generate go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest --config=api/config.yaml ../../api/openapi.yaml
 
 type Server struct {
 	db *store.DbStore
@@ -21,7 +21,10 @@ var log = logger.GetLogger().Sugar()
 func respond(w http.ResponseWriter, statusCode int, obj any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(obj)
+	err := json.NewEncoder(w).Encode(obj)
+	if err != nil {
+		log.Errorf("Failed to write response: %s", err.Error())
+	}
 }
 
 type Response struct {
