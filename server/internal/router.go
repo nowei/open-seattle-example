@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -25,6 +26,7 @@ func (s *Server) RegisterDonation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) DistributeDonation(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Stuffs")
 	var data DonationDistribution
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		w.WriteHeader(400)
