@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS [donations] (
     [name] TEXT,
     [type] TEXT,
     [quantity] INTEGER,
-    [description] TEXT,
+    [description] TEXT
 );
 CREATE TABLE IF NOT EXISTS [donation_distributions] (
     [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

@@ -18,8 +18,9 @@ type DbStore struct {
 	db *sql.DB
 }
 
-const file string = "shelter.db"
-const schemaFile string = "schemas.sql"
+// nit: this should be in a config file
+const file string = "internal/store/shelter.db"
+const schemaFile string = "internal/store/schemas.sql"
 
 func InstantiateDbStore() *DbStore {
 	db, err := sql.Open("sqlite3", file)
@@ -36,7 +37,7 @@ func InstantiateDbStore() *DbStore {
 	schema := string(schemaBytes)
 
 	if _, err := db.Exec(schema); err != nil {
-		log.Fatalf("Creating the schema: %s", err.Error())
+		log.Fatalf("Error creating the schema: %s", err.Error())
 		return nil
 	}
 
