@@ -34,6 +34,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonationRegistration"
+        "400":
+          description: Bad request
   /donations/distribute:
     post:
       tags:
@@ -53,8 +55,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonationDistribution"
-        "405":
-          description: Invalid input
+        "400":
+          description: Bad request
   /donations/report/inventory: # Likely needs pagination at some point
     get:
       tags:
@@ -69,6 +71,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonationInventory"
+        "500":
+          description: Internal Server Error
   /donations/report/donor: # Likely needs pagination at some point
     get:
       tags:
@@ -83,7 +87,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DonorReport"
-
+        "500":
+          description: Internal Server Error
 components:
   schemas:
     DonationType:

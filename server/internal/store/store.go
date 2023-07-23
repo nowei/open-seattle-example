@@ -43,19 +43,27 @@ func InstantiateDbStore() *DbStore {
 	}
 }
 
-func (d *DbStore) InsertRegistration(registration api.DonationRegistration) error {
+func (d *DbStore) InsertRegistration(registration api.DonationRegistration) (*api.DonationRegistration, error) {
 	// Write information to db
-	return nil
+	return nil, nil
 }
 
-func (d *DbStore) InsertDistribution(distribution api.DonationDistribution) error {
-	// Get donation
+func (d *DbStore) GetDonationRegistration(id int) (*api.DonationRegistration, error) {
+	return nil, nil
+}
 
-	// Aggregate all distributions of this donation
+func (d *DbStore) GetDonationDistribution(id int) (*api.DonationDistribution, error) {
+	return nil, nil
+}
 
-	// If new distribution + aggregate < original donation, add a new distribution
+func (d *DbStore) GetDistributedDonationAmount(id int) (int64, error) {
 
-	return nil
+	return 0, nil
+}
+
+func (d *DbStore) InsertDistribution(distribution api.DonationDistribution) (*api.DonationDistribution, error) {
+
+	return nil, nil
 }
 
 func (d *DbStore) GetInventoryReport() (*api.DonationInventory, error) {
