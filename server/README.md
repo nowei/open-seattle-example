@@ -27,11 +27,3 @@ Then we can curl things like:
 We use [Just](https://github.com/casey/just) for quick access to some scripts.
 
 We also use [golangci-lint](https://golangci-lint.run/usage/install/) for linting.
-
-## Next steps / Nice-to-haves:
-
-- Don't use sqlite
-- Dockerize everything
-- Make a FE app that can interact with this
-- Design the APIs better with filters for reports
-- Better testing suite for db interactions rather than just a single e2e test that nukes the db afterwards

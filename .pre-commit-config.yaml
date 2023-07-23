@@ -1,0 +1,31 @@
+---
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/psf/black
+  rev: 22.10.0
+  hooks:
+  - id: black
+- repo: local
+  hooks:
+  - id: golangci-lint
+    name: golangci-lint
+    description: Fast linters runner for Go.
+    entry: ./scripts/lint.sh --pre-commit
+    types: [go]
+    language: golang
+    require_serial: true
+- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+  rev: 0.2.1   # or other specific tag
+  hooks:
+  - id: yamlfmt
+    args: [--mapping, '2', --sequence, '2', --offset, '0', --width, '200']
+- repo: https://github.com/adrienverge/yamllint.git
+  rev: v1.32.0   # or higher tag
+  hooks:
+  - id: yamllint
+    args: [--format, parsable, .yamllint.yaml]

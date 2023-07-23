@@ -1,4 +1,4 @@
-generate: 
+generate:
   ./scripts/generate.sh
 
 lint:

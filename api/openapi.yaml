@@ -1,3 +1,4 @@
+---
 openapi: 3.0.3
 info:
   title: Local Shelter API
@@ -11,35 +12,36 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.11
 tags:
-  - name: donations
-    description: Operations for managing donations to the shelter
+- name: donations
+  description: Operations for managing donations to the shelter
 
 paths:
   /donations/register:
     post:
       tags:
-        - donations
+      - donations
       summary: Records details of the donations
-      description: Allows the shelter staff to record details of the donations, such as the donor's name, type of donation (money, food, clothing, etc.), quantity or amount donated, and the date of the donation.
+      description: Allows the shelter staff to record details of the donations, such as the donor's name, type of donation (money, food, clothing, etc.), quantity or amount donated, and the date of the
+        donation.
       operationId: registerDonation
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DonationRegistration"
+              $ref: '#/components/schemas/DonationRegistration'
       responses:
-        "201":
+        '201':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DonationRegistration"
-        "400":
+                $ref: '#/components/schemas/DonationRegistration'
+        '400':
           description: Bad request
   /donations/distribute:
     post:
       tags:
-        - donations
+      - donations
       summary: Distribute certain donations
       description: Allows the shelter staff to log when and how much of the donations are distributed, capturing the type of donation, quantity or amount distributed, and the date of distribution.
       operationId: distributeDonation
@@ -47,47 +49,47 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DonationDistribution"
+              $ref: '#/components/schemas/DonationDistribution'
       responses:
-        "201":
+        '201':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DonationDistribution"
-        "400":
+                $ref: '#/components/schemas/DonationDistribution'
+        '400':
           description: Bad request
   /donations/report/inventory: # Likely needs pagination at some point
     get:
       tags:
-        - donations
+      - donations
       summary: Generates an inventory report for the current status of donations
       description: Generates an inventory report displaying the current status of donations, grouped by type.
       operationId: getDonationInventoryReport
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DonationInventory"
-        "500":
+                $ref: '#/components/schemas/DonationInventory'
+        '500':
           description: Internal Server Error
   /donations/report/donor: # Likely needs pagination at some point
     get:
       tags:
-        - donations
+      - donations
       summary: Generates a donator report for each donor
       description: Generates a donator report, summarizing the total contributions received from each donor
       operationId: getDonorReport
       responses:
-        "200":
+        '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DonorReport"
-        "500":
+                $ref: '#/components/schemas/DonorReport'
+        '500':
           description: Internal Server Error
 components:
   schemas:
@@ -95,16 +97,16 @@ components:
       type: string
       description: The type of donation
       enum:
-        - money
-        - food # food is ambiguous so it should have a descriptor, amount of food is also ambiguous
-        - clothing # clothing is ambiguous so it should have a descriptor
+      - money
+      - food   # food is ambiguous so it should have a descriptor, amount of food is also ambiguous
+      - clothing   # clothing is ambiguous so it should have a descriptor
         # etc.
     DonationRegistration:
       type: object
       required:
-        - name
-        - type
-        - quantity
+      - name
+      - type
+      - quantity
       properties:
         id:
           type: integer
@@ -115,9 +117,9 @@ components:
           # There should really be a donor id or something
           type: string
           description: name of the donor; all donations under the same name are attributed to the same person (for simplicity)
-          example: "John Doe"
+          example: John Doe
         type:
-          $ref: "#/components/schemas/DonationType"
+          $ref: '#/components/schemas/DonationType'
         quantity:
           type: integer
           description: the amount given for the donation
@@ -133,9 +135,9 @@ components:
     DonationDistribution:
       type: object
       required:
-        - donation_id
-        - type
-        - quantity
+      - donation_id
+      - type
+      - quantity
       properties:
         id:
           type: integer
@@ -144,7 +146,7 @@ components:
           type: integer
           description: id of the donation this is associated with
         type:
-          $ref: "#/components/schemas/DonationType"
+          $ref: '#/components/schemas/DonationType'
         quantity:
           type: integer
           description: the amount distributed from the donation
@@ -161,46 +163,46 @@ components:
     TypeDonationStatus:
       type: object
       required:
-        - type
-        - statuses
+      - type
+      - statuses
       properties:
         type:
-          $ref: "#/components/schemas/DonationType"
+          $ref: '#/components/schemas/DonationType'
         statuses:
           type: array
           items:
-            $ref: "#/components/schemas/DonationStatus"
+            $ref: '#/components/schemas/DonationStatus'
     DonationStatus:
       type: object
       required:
-        - donation
-        - distributions
+      - donation
+      - distributions
       properties:
         donation:
-          $ref: "#/components/schemas/DonationRegistration"
+          $ref: '#/components/schemas/DonationRegistration'
         distributions:
           type: array
           items:
-            $ref: "#/components/schemas/DonationDistribution"
+            $ref: '#/components/schemas/DonationDistribution'
     DonorSummary:
       type: object
       required:
-        - name
-        - donations
+      - name
+      - donations
       properties:
         name:
           type: string
           description: name of the donor; all donations under the same name are attributed to the same person (for simplicity)
-          example: "John Doe"
+          example: John Doe
         donations:
           type: array
           items:
-            $ref: "#/components/schemas/DonationSummary"
+            $ref: '#/components/schemas/DonationSummary'
     DonationSummary:
       type: object
       properties:
         type:
-          $ref: "#/components/schemas/DonationType"
+          $ref: '#/components/schemas/DonationType'
         quantity:
           type: integer
           description: the amount given for the donation
@@ -215,11 +217,11 @@ components:
         report:
           type: array
           items:
-            $ref: "#/components/schemas/TypeDonationStatus"
+            $ref: '#/components/schemas/TypeDonationStatus'
     DonorReport:
       type: object
       properties:
         report:
           type: array
           items:
-            $ref: "#/components/schemas/DonorSummary"
+            $ref: '#/components/schemas/DonorSummary'

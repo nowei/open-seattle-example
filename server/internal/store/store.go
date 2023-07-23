@@ -194,7 +194,10 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 
 		for donationSummaryRows.Next() {
 			donation := api.DonationSummary{}
-			donationSummaryRows.Scan(&donation.Type, &donation.Quantity, &donation.QuantityDistributed)
+			err = donationSummaryRows.Scan(&donation.Type, &donation.Quantity, &donation.QuantityDistributed)
+			if err != nil {
+				return nil, err
+			}
 			donationSummaries = append(donationSummaries, donation)
 		}
 
