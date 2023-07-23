@@ -14,6 +14,8 @@ import (
 
 var log = logger.GetLogger().Sugar()
 
+const TIME_FORMAT = "2006-01-02 15:04:05.999999999-07:00"
+
 type DbStore struct {
 	db *sql.DB
 }
@@ -49,7 +51,7 @@ func InstantiateDbStore() *DbStore {
 func (d *DbStore) InsertRegistration(registrationData api.DonationRegistration) (*api.DonationRegistration, error) {
 	// Write information to db
 	now := time.Now()
-	res, err := d.db.Exec("INSERT INTO donations VALUES (NULL,?,?,?,?,?)", now.String(), registrationData.Name, registrationData.Type, registrationData.Quantity, registrationData.Description)
+	res, err := d.db.Exec("INSERT INTO donations(date, name, type, quantity, description) VALUES (?,?,?,?,?)", now.Format(TIME_FORMAT), registrationData.Name, registrationData.Type, registrationData.Quantity, registrationData.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +74,7 @@ func (d *DbStore) GetDonationRegistration(id int) (*api.DonationRegistration, er
 
 func (d *DbStore) InsertDistribution(distributionData api.DonationDistribution) (*api.DonationDistribution, error) {
 	now := time.Now()
-	res, err := d.db.Exec("INSERT INTO donation_distributions VALUES (NULL,?,?,?,?,?)", distributionData.DonationId, now.String(), distributionData.Type, distributionData.Quantity, distributionData.Description)
+	res, err := d.db.Exec("INSERT INTO donation_distributions(donation_id, date, type, quantity, description) VALUES (?,?,?,?,?)", distributionData.DonationId, now.Format(TIME_FORMAT), distributionData.Type, distributionData.Quantity, distributionData.Description)
 	if err != nil {
 		return nil, err
 	}
@@ -171,15 +173,19 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 		// Aggregate distributions by type
 		donationSummaryRows, err := d.db.Query(`
 		WITH dr_summary AS (
-			  SELECT type, SUM(quantity)
+			  SELECT type, SUM(quantity) AS quantity
 			    FROM donations
 			   WHERE name = ?
 			GROUP BY type
 		),
-		WITH dd_summary AS (
-			SELECT type, SUM(quantity)
+		dd_summary AS (
+			SELECT type, SUM(quantity) AS quantity
 			  FROM donation_distributions
-			 WHERE name = ?
+			 WHERE id IN (
+			   SELECT id
+			     FROM donations
+			    WHERE name = ?
+			 )
 		  GROUP BY type
 		)
 		SELECT dr_summary.type, dr_summary.quantity, dd_summary.quantity

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS [donations] (
 CREATE TABLE IF NOT EXISTS [donation_distributions] (
     [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     [donation_id] INTEGER,
-    [date] DATETIME
+    [date] DATETIME,
     [type] TEXT,
     [quantity] INTEGER,
     [description] TEXT,

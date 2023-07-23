@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/urfave/negroni"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -24,11 +25,9 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
-		res := r.Response
-		statusCode := 500
-		if res != nil {
-			statusCode = res.StatusCode
-		}
+		lrw := negroni.NewResponseWriter(w)
+		next.ServeHTTP(lrw, r)
+		statusCode := lrw.Status()
 
 		fields := []zapcore.Field{
 			zap.Int("status", statusCode),
@@ -49,7 +48,5 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		default:
 			Logger.Info("Success", fields...)
 		}
-
-		next.ServeHTTP(w, r)
 	})
 }

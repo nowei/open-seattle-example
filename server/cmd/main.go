@@ -53,5 +53,7 @@ func main() {
 		}
 	}))
 
+	log.Infof("Starting server on port 3333")
+
 	log.Fatalf("%v", http.ListenAndServe(":3333", r).Error())
 }

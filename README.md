@@ -1,6 +1,22 @@
 # open-seattle-example
 
-Prompt:
+## Utilities:
+
+- We use [Just](https://github.com/casey/just) for quick access to some scripts.
+- We also use [golangci-lint](https://golangci-lint.run/usage/install/) for linting `go` code.
+- We have a pre-commit hook to enforce style/formatting.
+
+## Next steps / Nice-to-haves:
+
+- Make a FE app that can interact with the BE
+- Don't use sqlite
+- Dockerize the server
+  - `Tilt` setup for local dev environments with hot-reloading would be nice
+- Design the APIs better with filters for reports
+- Better testing suite for db interactions rather than just a single e2e test that nukes the db afterwards to get a clean state
+  - Technically the e2e test can use a new db and manage the process as well if I config out the db file and use python to control the processes.
+
+## Prompt:
 
 Imagine you're tasked with creating a practical solution for a local shelter to manage their donation inventory. This shelter is in need of a user-friendly tool to accurately record and track the inflow and outflow of donations, and to generate insightful reports about their donation management.
 
