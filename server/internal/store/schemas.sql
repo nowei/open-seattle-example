@@ -15,3 +15,4 @@ CREATE TABLE IF NOT EXISTS [donation_distributions] (
     [description] TEXT,
     FOREIGN KEY(donation_id) REFERENCES donations(id)
 );
+PRAGMA foreign_keys = ON;

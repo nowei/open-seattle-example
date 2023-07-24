@@ -200,6 +200,10 @@ components:
             $ref: '#/components/schemas/DonationSummary'
     DonationSummary:
       type: object
+      required:
+      - type
+      - quantity
+      - quantity_distributed
       properties:
         type:
           $ref: '#/components/schemas/DonationType'

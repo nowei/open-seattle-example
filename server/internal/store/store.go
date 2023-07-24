@@ -184,7 +184,7 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 		dd_summary AS (
 			SELECT type, SUM(quantity) AS quantity
 			  FROM donation_distributions
-			 WHERE id IN (
+			 WHERE donation_id IN (
 			   SELECT id
 			     FROM donations
 			    WHERE name = ?
@@ -216,4 +216,8 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 
 	report := api.DonorReport{Report: &donorSummaries}
 	return &report, nil
+}
+
+func (d *DbStore) Close() {
+	d.db.Close()
 }
