@@ -22,13 +22,16 @@ type DbStore struct {
 
 // nit: this should be in a config file
 const file string = "internal/store/shelter.db"
-const schemaFile string = "internal/store/schemas.sql"
+const SchemaFile string = "internal/store/schemas.sql"
 
-func InstantiateDbStore() *DbStore {
-	db, err := sql.Open("sqlite3", file)
-	if err != nil {
-		log.Fatalf("There was a problem opening the db connection: %s", err.Error())
-		return nil
+func InstantiateDbStore(db *sql.DB, schemaFile string) *DbStore {
+	var err error
+	if db == nil {
+		db, err = sql.Open("sqlite3", file)
+		if err != nil {
+			log.Fatalf("There was a problem opening the db connection: %s", err.Error())
+			return nil
+		}
 	}
 
 	schemaBytes, err := os.ReadFile(schemaFile)
@@ -95,9 +98,9 @@ func (d *DbStore) GetDonationDistribution(id int) (*api.DonationDistribution, er
 	return &distribution, nil
 }
 
-func (d *DbStore) GetDistributedDonationAmount(donationId int) (int64, error) {
+func (d *DbStore) GetDistributedDonationAmount(donationId int) (int, error) {
 	row := d.db.QueryRow("SELECT SUM(quantity) FROM donation_distributions WHERE donation_id=?", donationId)
-	var amount int64
+	var amount int
 	if err := row.Scan(&amount); err == sql.ErrNoRows {
 		return 0, err
 	}

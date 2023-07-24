@@ -100,7 +100,7 @@ components:
       - money
       - food   # food is ambiguous so it should have a descriptor, amount of food is also ambiguous
       - clothing   # clothing is ambiguous so it should have a descriptor
-        # etc.
+          # etc.
     DonationRegistration:
       type: object
       required:
@@ -111,7 +111,7 @@ components:
         id:
           type: integer
           description: id of the donation (to be populated by the service)
-          format: int64
+          format: int
           example: 1
         name:
           # There should really be a donor id or something
@@ -124,7 +124,7 @@ components:
           type: integer
           description: the amount given for the donation
           minimum: 1
-          format: int64
+          format: int
           example: 1
         date:
           type: string
@@ -150,7 +150,7 @@ components:
         quantity:
           type: integer
           description: the amount distributed from the donation
-          format: int64
+          format: int
           example: 1
           minimum: 1
         date:
@@ -206,10 +206,10 @@ components:
         quantity:
           type: integer
           description: the amount given for the donation
-          format: int64
+          format: int
         quantity_distributed:
           type: integer
-          format: int64
+          format: int
           description: the amount distributed for the donation
     DonationInventory:
       type: object

@@ -32,7 +32,7 @@ type Response struct {
 }
 
 func NewServer() api.ServerInterface {
-	db := store.InstantiateDbStore()
+	db := store.InstantiateDbStore(nil, store.SchemaFile)
 	if db == nil {
 		log.Fatalf("Could not load db, exiting")
 	}
