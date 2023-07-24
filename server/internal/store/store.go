@@ -173,7 +173,7 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 			return nil, err
 		}
 
-		var donationSummaries []api.DonationSummary
+		donationSummaries := map[string]api.DonationSummary{}
 
 		// Aggregate donations by type
 		// Aggregate distributions by type
@@ -203,14 +203,15 @@ func (d *DbStore) GetDonorReport() (*api.DonorReport, error) {
 			return nil, err
 		}
 		defer donationSummaryRows.Close()
+		var donationType string
 
 		for donationSummaryRows.Next() {
 			donation := api.DonationSummary{}
-			err = donationSummaryRows.Scan(&donation.Type, &donation.Quantity, &donation.QuantityDistributed)
+			err = donationSummaryRows.Scan(&donationType, &donation.Quantity, &donation.QuantityDistributed)
 			if err != nil {
 				return nil, err
 			}
-			donationSummaries = append(donationSummaries, donation)
+			donationSummaries[donationType] = donation
 		}
 
 		donorSummary := api.DonorSummary{Donations: donationSummaries, Name: name}

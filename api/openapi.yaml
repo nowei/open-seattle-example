@@ -183,18 +183,15 @@ components:
           description: name of the donor; all donations under the same name are attributed to the same person (for simplicity)
           example: John Doe
         donations:
-          type: array
-          items:
+          type: object
+          additionalProperties:
             $ref: '#/components/schemas/DonationSummary'
     DonationSummary:
       type: object
       required:
-      - type
       - quantity
       - quantity_distributed
       properties:
-        type:
-          $ref: '#/components/schemas/DonationType'
         quantity:
           type: integer
           description: the amount given for the donation

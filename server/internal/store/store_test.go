@@ -179,8 +179,7 @@ func TestDonorReport(t *testing.T) {
 		r := (*report.Report)[0]
 		assert.Equal(t, r.Name, "Andrew")
 		assert.Equal(t, len(r.Donations), 1)
-		donations := r.Donations[0]
-		assert.Equal(t, donations.Type, api.Clothing)
+		donations := r.Donations[string(api.Clothing)]
 		assert.Equal(t, donations.Quantity, 42)
 		assert.Equal(t, donations.QuantityDistributed, 8)
 	})
