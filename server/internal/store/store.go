@@ -21,7 +21,7 @@ type DbStore struct {
 }
 
 // nit: this should be in a config file
-const file string = "internal/store/shelter.db"
+const file string = "file:internal/store/shelter.db"
 const SchemaFile string = "internal/store/schemas.sql"
 
 func InstantiateDbStore(db *sql.DB, schemaFile string) *DbStore {
@@ -62,11 +62,11 @@ func (d *DbStore) InsertRegistration(registrationData api.DonationRegistration) 
 	if id, err = res.LastInsertId(); err != nil {
 		return nil, err
 	}
-	return d.GetDonationRegistration(int(id))
+	return d.GetDonationRegistration(int(id), registrationData.Type)
 }
 
-func (d *DbStore) GetDonationRegistration(id int) (*api.DonationRegistration, error) {
-	row := d.db.QueryRow("SELECT * FROM donations WHERE Id=?", id)
+func (d *DbStore) GetDonationRegistration(id int, donationType api.DonationType) (*api.DonationRegistration, error) {
+	row := d.db.QueryRow("SELECT * FROM donations WHERE Id=? AND type=?", id, donationType)
 	registration := api.DonationRegistration{}
 	if err := row.Scan(&registration.Id, &registration.Date, &registration.Name, &registration.Type, &registration.Quantity, &registration.Description); err == sql.ErrNoRows {
 		return nil, err
@@ -111,7 +111,7 @@ func (d *DbStore) GetInventoryReport() (*api.DonationInventory, error) {
 
 	// For each type
 	types := []api.DonationType{api.Clothing, api.Food, api.Money}
-	var reportByType []api.TypeDonationStatus
+	report := api.DonationInventory{}
 
 	for _, t := range types {
 		// For all donations for the type
@@ -146,9 +146,12 @@ func (d *DbStore) GetInventoryReport() (*api.DonationInventory, error) {
 			status := api.DonationStatus{Donation: registration, Distributions: distributions}
 			donationStatuses = append(donationStatuses, status)
 		}
-		reportByType = append(reportByType, api.TypeDonationStatus{Type: t, Statuses: donationStatuses})
+		if len(donationStatuses) > 0 {
+			report[string(t)] = donationStatuses
+		} else {
+			report[string(t)] = []api.DonationStatus{}
+		}
 	}
-	report := api.DonationInventory{Report: &reportByType}
 
 	return &report, nil
 }

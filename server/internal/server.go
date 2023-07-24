@@ -65,7 +65,7 @@ func (s *Server) DistributeDonation(w http.ResponseWriter, r *http.Request) {
 		respond(w, http.StatusBadRequest, Response{Message: "error decoding the data"})
 		return
 	}
-	donation, err := s.db.GetDonationRegistration(distributionData.DonationId)
+	donation, err := s.db.GetDonationRegistration(distributionData.DonationId, distributionData.Type)
 	if err != nil {
 		respond(w, http.StatusBadRequest, Response{Message: "error getting donation"})
 		return

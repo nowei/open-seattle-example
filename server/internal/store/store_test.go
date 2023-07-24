@@ -40,7 +40,7 @@ func TestInsertDonation(t *testing.T) {
 		assert.Equal(t, registration.Quantity, 42)
 
 		// Test getting the donation registration
-		registration, err = dbstore.GetDonationRegistration(1)
+		registration, err = dbstore.GetDonationRegistration(1, api.Clothing)
 		assert.NoError(t, err)
 		assert.Equal(t, *registration.Description, description)
 		assert.Equal(t, *registration.Id, 1)
@@ -125,15 +125,14 @@ func TestInventoryReport(t *testing.T) {
 
 		report, err := dbstore.GetInventoryReport()
 		assert.NoError(t, err)
-		assert.NotNil(t, report.Report)
-		for _, r := range *report.Report {
-			if r.Type == api.Clothing {
-				assert.NotNil(t, r.Statuses)
-				assert.Equal(t, len(r.Statuses), 1)
-				assert.Equal(t, len(r.Statuses[0].Distributions), 2)
-				assert.Equal(t, *r.Statuses[0].Donation.Id, 1)
+		for inventoryType, r := range *report {
+			if api.DonationType(inventoryType) == api.Clothing {
+				assert.NotNil(t, r)
+				assert.Equal(t, len(r), 1)
+				assert.Equal(t, len(r[0].Distributions), 2)
+				assert.Equal(t, *r[0].Donation.Id, 1)
 			} else {
-				assert.Nil(t, r.Statuses)
+				assert.Empty(t, r)
 			}
 		}
 	})
@@ -152,11 +151,11 @@ func TestInventoryReport(t *testing.T) {
 
 		report, err := dbstore.GetInventoryReport()
 		assert.NoError(t, err)
-		assert.NotNil(t, report.Report)
-		for _, r := range *report.Report {
-			assert.NotNil(t, r.Statuses)
-			assert.Equal(t, len(r.Statuses), 1)
-			assert.Equal(t, len(r.Statuses[0].Distributions), 2)
+		assert.NotNil(t, report)
+		for _, r := range *report {
+			assert.NotNil(t, r)
+			assert.Equal(t, len(r), 1)
+			assert.Equal(t, len(r[0].Distributions), 2)
 		}
 	})
 }

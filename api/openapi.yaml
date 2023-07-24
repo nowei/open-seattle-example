@@ -75,7 +75,7 @@ paths:
                 $ref: '#/components/schemas/DonationInventory'
         '500':
           description: Internal Server Error
-  /donations/report/donor: # Likely needs pagination at some point
+  /donations/report/donors: # Likely needs pagination at some point
     get:
       tags:
       - donations
@@ -160,18 +160,6 @@ components:
           type: string
           description: (optional) description of the distribution
         # Probably needs like a recipient or something
-    TypeDonationStatus:
-      type: object
-      required:
-      - type
-      - statuses
-      properties:
-        type:
-          $ref: '#/components/schemas/DonationType'
-        statuses:
-          type: array
-          items:
-            $ref: '#/components/schemas/DonationStatus'
     DonationStatus:
       type: object
       required:
@@ -217,11 +205,10 @@ components:
           description: the amount distributed for the donation
     DonationInventory:
       type: object
-      properties:
-        report:
-          type: array
-          items:
-            $ref: '#/components/schemas/TypeDonationStatus'
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/DonationStatus'
     DonorReport:
       type: object
       properties:
