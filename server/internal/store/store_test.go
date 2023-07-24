@@ -105,8 +105,7 @@ func TestInsertDistribtution(t *testing.T) {
 		defer dbstore.db.Close()
 		description := "socks"
 		distributionData := testutils.CreateTestDonationDistribution(5, 4, api.Clothing, &description)
-		d, err := dbstore.InsertDistribution(distributionData)
-		log.Infof("This is %v", d)
+		_, err := dbstore.InsertDistribution(distributionData)
 		assert.Error(t, err)
 	})
 
