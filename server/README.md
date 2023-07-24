@@ -16,7 +16,7 @@ go run cmd/main.go
 
 which should also download any missing dependencies. The server will then run on localhost:3333
 
-Then for the we can `curl` things like:
+Then to interact with the server, we can `curl` things like:
 
 `register`:
 
