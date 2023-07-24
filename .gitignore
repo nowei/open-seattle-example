@@ -1,2 +1,4 @@
 **/shelter.db
 **/test.db
+__pycache__
+.pytest_cache
